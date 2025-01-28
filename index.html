@@ -95,7 +95,7 @@
       }
 
       // Function to create a single firework
-      function createFirework(numberIndex, bigbang = false) {
+      function createFirework(numberIndex, delayMore = 0) {
         const screenWidth = window.innerWidth;
         const trailAreaWidth = screenWidth * CONFIG.trailWidthArea;
 
@@ -120,7 +120,7 @@
           trail.style.setProperty("--trail-duration", CONFIG.trailDuration);
           trail.style.setProperty(
             "--trail-max-y",
-            `${parseInt(centerY + 29)}px`,
+            `${parseInt(centerY + 39)}px`,
           );
           trail.style.left = `${centerX}px`;
           trail.style.height = `${trailHeight}px`; // Apply random trail height
@@ -130,6 +130,8 @@
             () => trail.remove(),
             parseFloat(CONFIG.trailDuration) * 1000,
           );
+
+          return trail;
         };
 
         showTrail();
@@ -170,7 +172,7 @@
             number.style.top = `${centerY}px`;
             document.body.appendChild(number);
 
-            setTimeout(() => number.remove(), parseFloat(duration) * 1500);
+            setTimeout(() => number.remove(), parseFloat(duration) * 1200);
           }
         };
 
@@ -178,7 +180,7 @@
           () => {
             showFirework();
           },
-          parseFloat(CONFIG.trailDuration) * 1000 - 199,
+          parseFloat(CONFIG.trailDuration) * 1000 - 200,
         ); // Delay explosion until trail finishes
       }
 

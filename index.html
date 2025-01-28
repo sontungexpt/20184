@@ -21,6 +21,7 @@
         );
         animation: moveTrail var(--trail-duration) ease-out forwards;
         z-index: 1;
+        will-change: transform;
       }
 
       @keyframes moveTrail {
@@ -42,6 +43,7 @@
         animation-delay: var(--trail-duration);
         transform-origin: center;
         z-index: 2;
+        will-change: transform, opacity;
       }
 
       @keyframes explode {
@@ -80,7 +82,7 @@
         maxDuration: 2.0, // Maximum explosion duration (seconds)
         particleSize: 10, // Size of each firework particle
         trailDuration: "1.5s", // Duration for the trail to shoot up
-        resetDelay: 70000, // Delay to restart after finishing (milliseconds)
+        resetDelay: 65000, // Delay to restart after finishing (milliseconds)
         bigbangDelay: 3000, // Delay to start bigbang (milliseconds)
       };
 
@@ -160,17 +162,15 @@
             document.body.appendChild(firework);
 
             setTimeout(() => firework.remove(), parseFloat(duration) * 1000);
-            if (!bigbang) {
-              // Display number at explosion center
-              const number = document.createElement("div");
-              number.classList.add("number");
-              number.textContent = CONFIG.numbers[numberIndex];
-              number.style.left = `${centerX}px`;
-              number.style.top = `${centerY}px`;
-              document.body.appendChild(number);
+            // Display number at explosion center
+            const number = document.createElement("div");
+            number.classList.add("number");
+            number.textContent = CONFIG.numbers[numberIndex];
+            number.style.left = `${centerX}px`;
+            number.style.top = `${centerY}px`;
+            document.body.appendChild(number);
 
-              setTimeout(() => number.remove(), 2000);
-            }
+            setTimeout(() => number.remove(), parseFloat(duration) * 1500);
           }
         };
 
@@ -184,7 +184,7 @@
 
       function bigbang() {
         const delay = 2500;
-        const turn = 10;
+        const turn = 20;
         for (let j = 0; j < turn; j++) {
           setTimeout(() => {
             for (let i = 0; i < CONFIG.numbers.length; i++) {
@@ -192,15 +192,6 @@
             }
           }, j * delay);
         }
-        setTimeout(() => {
-          for (let j = 0; j < 10; j++) {
-            setTimeout(() => {
-              for (let i = 0; i < CONFIG.numbers.length; i++) {
-                createFirework(i, true);
-              }
-            }, j * 2000);
-          }
-        }, turn * delay);
       }
 
       // Function to start fireworks display

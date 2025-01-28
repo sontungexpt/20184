@@ -95,7 +95,7 @@
       }
 
       // Function to create a single firework
-      function createFirework(numberIndex, delayMore = 0) {
+      async function createFirework(numberIndex) {
         const screenWidth = window.innerWidth;
         const trailAreaWidth = screenWidth * CONFIG.trailWidthArea;
 
@@ -185,12 +185,12 @@
       }
 
       function bigbang() {
-        const delay = 2500;
+        const delay = 3000;
         const turn = 20;
         for (let j = 0; j < turn; j++) {
           setTimeout(() => {
             for (let i = 0; i < CONFIG.numbers.length; i++) {
-              createFirework(i);
+              setTimeout(() => createFirework(i), 700);
             }
           }, j * delay);
         }
@@ -204,10 +204,7 @@
             createFirework(currentIndex);
             currentIndex++;
           } else {
-            setTimeout(bigbang, CONFIG.bigbangDelay);
-            for (let i = 0; i < CONFIG.numbers.length; i++) {
-              createFirework(i);
-            }
+            bigbang();
             clearInterval(interval);
             setTimeout(startFireworks, CONFIG.resetDelay); // Restart after delay
           }

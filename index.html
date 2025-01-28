@@ -75,12 +75,13 @@
         maxRadius: 450, // Maximum explosion radius
         minTrailHeight: 50, // Minimum trail height
         maxTrailHeight: 150, // Maximum trail height
-        trailWidthArea: 0.6, // Percentage width of screen for firing (e.g., 60%)
+        trailWidthArea: 0.8, // Percentage width of screen for firing (e.g., 60%)
         minDuration: 1.0, // Minimum explosion duration (seconds)
         maxDuration: 2.0, // Maximum explosion duration (seconds)
         particleSize: 10, // Size of each firework particle
         trailDuration: "1.5s", // Duration for the trail to shoot up
-        resetDelay: 3000, // Delay to restart after finishing (milliseconds)
+        resetDelay: 25000, // Delay to restart after finishing (milliseconds)
+        bigbangDelay: 3000, // Delay to start bigbang (milliseconds)
       };
 
       // Helper to generate a random color
@@ -92,7 +93,7 @@
       }
 
       // Function to create a single firework
-      function createFirework(numberIndex) {
+      function createFirework(numberIndex, bigbang = false) {
         const screenWidth = window.innerWidth;
         const trailAreaWidth = screenWidth * CONFIG.trailWidthArea;
 
@@ -159,16 +160,17 @@
             document.body.appendChild(firework);
 
             setTimeout(() => firework.remove(), parseFloat(duration) * 1000);
+            if (!bigbang) {
+              // Display number at explosion center
+              const number = document.createElement("div");
+              number.classList.add("number");
+              number.textContent = CONFIG.numbers[numberIndex];
+              number.style.left = `${centerX}px`;
+              number.style.top = `${centerY}px`;
+              document.body.appendChild(number);
 
-            // Display number at explosion center
-            const number = document.createElement("div");
-            number.classList.add("number");
-            number.textContent = CONFIG.numbers[numberIndex];
-            number.style.left = `${centerX}px`;
-            number.style.top = `${centerY}px`;
-            document.body.appendChild(number);
-
-            setTimeout(() => number.remove(), 2000);
+              setTimeout(() => number.remove(), 2000);
+            }
           }
         };
 
@@ -180,6 +182,27 @@
         ); // Delay explosion until trail finishes
       }
 
+      function bigbang() {
+        const delay = 2500;
+        const turn = 10;
+        for (let j = 0; j < turn; j++) {
+          setTimeout(() => {
+            for (let i = 0; i < CONFIG.numbers.length; i++) {
+              createFirework(i);
+            }
+          }, j * delay);
+        }
+        setTimeout(() => {
+          for (let j = 0; j < 10; j++) {
+            setTimeout(() => {
+              for (let i = 0; i < CONFIG.numbers.length; i++) {
+                createFirework(i, true);
+              }
+            }, j * 2000);
+          }
+        }, turn * delay);
+      }
+
       // Function to start fireworks display
       function startFireworks() {
         let currentIndex = 0;
@@ -188,6 +211,10 @@
             createFirework(currentIndex);
             currentIndex++;
           } else {
+            setTimeout(bigbang, CONFIG.bigbangDelay);
+            for (let i = 0; i < CONFIG.numbers.length; i++) {
+              createFirework(i);
+            }
             clearInterval(interval);
             setTimeout(startFireworks, CONFIG.resetDelay); // Restart after delay
           }
